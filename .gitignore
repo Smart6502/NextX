@@ -1,0 +1,11 @@
+
+cogs/__pycache__/admin.cpython-38.pyc
+cogs/__pycache__/database.cpython-38.pyc
+cogs/__pycache__/events.cpython-38.pyc
+cogs/__pycache__/fun.cpython-38.pyc
+cogs/__pycache__/info.cpython-38.pyc
+cogs/__pycache__/misc.cpython-38.pyc
+cogs/__pycache__/mod.cpython-38.pyc
+db/.google-cookie
+db/server_data.db
+token.json
