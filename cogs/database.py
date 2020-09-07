@@ -8,21 +8,21 @@ from discord.ext import commands
 
 os.chdir('db')
 
-connection = sqlite3.connect("server_data.db")
+connection = sqlite3.connect("levelsys.db")
 
 cursor = connection.cursor()
 
 #TO-EXECUTE-COMMANDS
 
-class Database(commands.Cog):
+class levelsys(commands.Cog):
     def __init__(self, bot):
         self.bot = bot
 
     @commands.command()
-    async def test(self, ctx):
-        print(connection.total_changes)
-        await ctx.send(connection.total_changes)
+    async def testdata(self, ctx):
+        ctx.send("Success")
+        ctx.send(connection.total_changes)
 
 def setup(bot):
-    bot.add_cog(Database(bot))
+    bot.add_cog(levelsys(bot))
 
