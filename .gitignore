@@ -9,3 +9,4 @@ cogs/__pycache__/mod.cpython-38.pyc
 db/.google-cookie
 db/server_data.db
 token.json
+.gitignore
