@@ -79,9 +79,10 @@ class Misc(commands.Cog):
 
     @commands.command()
     async def avatar(self,ctx,member: discord.Member):
-        embed=discord.Embed(title=f"{member.name}'s avatar")
+        embed=discord.Embed(title=f"{member.name}'s avatar", colour=discord.Colour.dark_purple())
         embed.set_image(url=f"{member.avatar_url}")
         await ctx.send(embed=embed)
+
     @commands.command(aliases=['trans'])
     async def translate(self,ctx,arg,arg2):
         translator = Translator()
@@ -179,7 +180,7 @@ class Misc(commands.Cog):
         embed.set_author(name="NextX v2.02", icon_url="https://is.gd/TTueo7")
         embed.add_field(name=f"Ping: {round(self.bot.latency * 1000)}ms", value="\u200b", inline=False)
         embed.add_field(name=f"Servers: {len(self.bot.guilds)} ", value="\u200b", inline=False)
-        embed.add_field(name=f"Created by: <:Xenon6502:718149776574775387> Xenon6502#5188", value="\u200b", inline=False)
+        embed.set_footer(text="Created by Xenon6502#5188")
         await ctx.send(embed=embed)
 
 def setup(bot):

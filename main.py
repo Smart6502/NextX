@@ -54,14 +54,23 @@ async def on_ready():
     await client.change_presence(status=discord.Status.online, activity=discord.Game(f"{activity} | {len(client.guilds)} servers & {iter_length} users"))
     print('Bot online')
 @client.event
-async def on_guild_join(guild):
+async def on_guild_join(guild, ctx):
     iter_length = len(list(client.get_all_members()))
     await client.change_presence(status=discord.Status.online, activity=discord.Game(f"{activity} | {len(client.guilds)} servers & {iter_length} users"))
+    gid = int(guild.system_channel.id)
+    channel = client.get_channel(gid)
+    await channel.send("Heyo it works")
 
 @client.event
 async def on_disconnect():
     print("Disconnected")
 
+#------------Constant-----------
+
+@client.command()
+async def testcom(ctx):
+    await ctx.send("Test successful!!")
+    
 
 client.run(token)
 
