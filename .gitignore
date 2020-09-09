@@ -10,3 +10,9 @@ db/.google-cookie
 db/server_data.db
 token.json
 .gitignore
+DB Browser for SQLite/api-ms-win-core-console-l1-1-0.dll
+*.dll
+*.exe
+DB Browser for SQLite/licenses/LICENSE
+DB Browser for SQLite/licenses/LICENSE-PLUGINS
+*.qm
