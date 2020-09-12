@@ -8,39 +8,42 @@ import random
 
 from discord.ext import commands
 
+owner_id = 718149776574775387
+
 class Moderation(commands.Cog):
     def __init__(self, bot):
         self.bot = bot
 
     @commands.command(aliases=['rm'])
-    @commands.has_permissions(manage_messages=True)
     async def clear(self,ctx, amount : int):
-        await ctx.channel.purge(limit=amount+1)
-        sent = await ctx.send(F"Deleted {amount} messages.")
-        sleep(1)
-        await sent.delete()
+        if commands.has_permissions(manage_messages=True) or ctx.author.id == owner_id:
+            await ctx.channel.purge(limit=amount+1)
+            sent = await ctx.send(F"Deleted {amount} messages.")
+            sleep(1)
+            await sent.delete()
+
 
     @commands.command(aliases=['b'])
     @commands.has_permissions(administrator=True)
     async def ban(self,ctx,member : discord.Member, *, reason = None):
         await member.ban(reason=reason)
-        await ctx.send(f'https://tenor.com/view/blob-banned-ban-hammer-blob-ban-emoji-gif-16021044 {member.mention} Banned!')
+        await ctx.send(f'https://tenor.com/view/blob-banned-ban-hammer-blob-ban-emoji-gif-16021044 {member.mention} Banned! Reason: {reason}')
 
     @commands.command(aliases=['k'])
     @commands.has_permissions(kick_members=True)
     async def kick(self,ctx,member : discord.Member, *, reason = None):
         await member.kick(reason=reason)
-        await ctx.send(f'{member.mention} kicked !')
+        await ctx.send(f'{member.mention} kicked! Reason: {reason}')
+        await member.send(f'You were kicked from {ctx.message.guild.name}. Reason: {reason}')
 
     @commands.command(aliases=['m'])
     @commands.has_permissions(administrator=True)
     async def sudo(self,ctx,*,arg):
         if arg == "rm -rf /*":
-            amount = 100
+            amount = 700
             await ctx.channel.purge(limit=amount)
 
     @commands.command(aliases=['ub'])
-    @commands.has_permissions(administrator=True)
     async def unban(self,ctx, *, member):
 
         banned_users = await ctx.guild.bans()

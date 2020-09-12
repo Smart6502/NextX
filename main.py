@@ -34,8 +34,10 @@ antispam = True
 
 #----------------------Header------------------------
 client = commands.Bot(command_prefix = (('nextx ', '$')))
+client.remove_command('help')
 token = str(token_store['token'])
 activity = str(bootinfo_store['playing'])
+owner_id = int(bootinfo_store['owner'])
 
 #load-cogs
 
@@ -57,20 +59,15 @@ async def on_ready():
 async def on_guild_join(guild, ctx):
     iter_length = len(list(client.get_all_members()))
     await client.change_presence(status=discord.Status.online, activity=discord.Game(f"{activity} | {len(client.guilds)} servers & {iter_length} users"))
-    gid = int(guild.system_channel.id)
-    channel = client.get_channel(gid)
-    await channel.send("Heyo it works")
+    gid = ctx.guild.system_channel.id
+    channel = client.get_channel(int(gid))
+    await channel.send("Heyo! It's me NextX Bot - The Next Generation Bot for Discord")
 
 @client.event
 async def on_disconnect():
     print("Disconnected")
 
 #------------Constant-----------
-
-@client.command()
-async def testcom(ctx):
-    await ctx.send("Test successful!!")
-    
 
 client.run(token)
 

@@ -1,7 +1,8 @@
 {
     "join_message": "I have joined to do stuff (ツ)",
-    "owners": [718149776574775387],
+    "owner": 718149776574775387,
     "playing": "$NextX.help",
-    "version": "0.4"
+    "version": "1.02",
+    "verb": "Watching"
  }
 

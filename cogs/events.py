@@ -11,12 +11,22 @@ class Events(commands.Cog):
 
     @commands.Cog.listener()
     async def on_message(self, ctx):
-        await ctx.send(self.bot.guilds)
+        pass
+        
 
+    @commands.Cog.listener()
+    async def on_command_error(self, ctx, *args):
+        pass
 
     @commands.command(aliases=['getel'])
     async def get_event_logs(self, ctx):
         pass
+
+    @commands.command()
+    async def syscht(self, ctx):
+        gid = ctx.guild.system_channel.id
+        channel = self.bot.get_channel(gid)
+        await channel.send(f"System channel HERE {ctx.message.author.mention}")
 
 def setup(bot):
     bot.add_cog(Events(bot))

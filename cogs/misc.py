@@ -16,12 +16,14 @@ from time import sleep
 class Misc(commands.Cog):
     def __init__(self, bot):
         self.bot = bot
+
     @commands.command()
     async def github(self, ctx):
         await ctx.send("https://github.com/Smart6502/NextX")
+
     @commands.command()
-    async def echo(self, ctx, *, arg):
-        await ctx.send(f"{arg}")
+    async def echo(self, ctx, *args):
+        await ctx.send(f"{args}")
 
     @commands.command()
     async def ping(self,ctx):
@@ -72,16 +74,26 @@ class Misc(commands.Cog):
 
         await ctx.send(random.choice(responses))
 
+    async def convertTuple(self, tup):
+        str = ''.join(tup)
+        return str
 
-    async def loading_animation(self, ctx, text):
-        gembed = discord.Embed(title = "**Loading....**", description=str(text))
+    @commands.command(aliases=['loading_anime'])
+    async def loading_animation(self, ctx, *args):
+        string = ' '.join(args)
+        gembed = discord.Embed(title = "**Loading....**", description=str(string))
         gembed.set_thumbnail(url="https://gifimage.net/wp-content/uploads/2017/09/animated-loading-gif-transparent-background-12.gif")
+        await ctx.send(embed=gembed)
 
     @commands.command()
     async def avatar(self,ctx,member: discord.Member):
         embed=discord.Embed(title=f"{member.name}'s avatar", colour=discord.Colour.dark_purple())
         embed.set_image(url=f"{member.avatar_url}")
-        await ctx.send(embed=embed)
+        
+        if member.mention == "<@751415029424979988>":
+            await ctx.send("Hey! You can't do that!")
+        else:
+            await ctx.send(embed=embed)
 
     @commands.command(aliases=['trans'])
     async def translate(self,ctx,arg,arg2):
@@ -91,19 +103,21 @@ class Misc(commands.Cog):
         embed.add_field(name="Original Word: ", value=f"`{translation.origin}`", inline=False)
         embed.add_field(name="Translated Word: ", value=f"`{translation.text}`", inline=True)
         await ctx.send(embed=embed)
-    @commands.command(aliases=['wikipedia','pedia','wikisearch','wsearch'])
-    async def wiki(self,ctx,*,arg):
 
-        search = wikipedia.search(f"{arg}")
+    @commands.command(aliases=['wikipedia','pedia','wikisearch','wsearch'])
+    async def wiki(self,ctx,*args):
+
+        content = ' '.join(args)
+        search = wikipedia.search(f"{content}")
         result = search[0]
         id = result.replace('4', '')
-        page = wikipedia.page(f"{id}")
-        wiki = wikipedia.summary(f"{id}",sentences=1)
+        page = wikipedia.page(f"{id}") 
+        wiki = wikipedia.summary(f"{id}",sentences=5)
         images = page.images
         rand = random.randint(1,20)
         embed=discord.Embed(title="Wikipedia", colour=0xf4eded)
-        embed.add_field(name="Search", value=f"`{arg}`", inline=False)
-        embed.add_field(name="Result", value=f"`{wiki}`", inline=True)
+        embed.add_field(name="Search", value=f"**`{content}`**", inline=False)
+        embed.add_field(name="Result", value=f"{wiki}", inline=True)
         embed.set_thumbnail(url=f"{images[rand]}")
         if "svg" in images[rand]:
                 embed.set_thumbnail(url=f"{images[random.randint(1,20)]}")
@@ -118,7 +132,7 @@ class Misc(commands.Cog):
         defs = ud.define(f'{arg}')
         d = defs[0]
         def_final = d.definition.translate({ord(i): None for i in '[]'})
-        embed=discord.Embed(color=0xdf3908)
+        embed=discord.Embed(title=" ", description=" ", color=0xdf3908)
         embed.set_author(name="Urban DICT",icon_url="https://i.pinimg.com/originals/37/46/41/374641157f9fa2ae904664d6c89b984b.jpg")
         embed.add_field(name="Search", value=f"`{arg}`", inline=False)
         embed.set_thumbnail(url="https://i.pinimg.com/originals/37/46/41/374641157f9fa2ae904664d6c89b984b.jpg")
@@ -128,20 +142,20 @@ class Misc(commands.Cog):
     @commands.command(aliases=['gs'])
     async def gsearch(self, ctx, *args):
         
+        content = ' '.join(args)
+
         try: 
             from googlesearch import search 
         except ImportError:  
             print("Google MDLE import error - NotFound") 
         
         # to search 
-        query = str(args)
+        query = str(content)
 
-        for j in search(query, tld="com", num=3, stop=3, pause=0):
+        for j in search(query, tld="com", num=4, stop=4, pause=0):
 
             await ctx.send(f"**Search result: **")
             await ctx.send(j)
-            
-        #ERROR FIX PENDING
 
     @commands.command(aliases=['jokes'])
     async def joke(self,ctx):
@@ -173,15 +187,6 @@ class Misc(commands.Cog):
             return mainString
         trans = replaceMultiple(arg, ['l', 'r'] , "w")
         await ctx.send(trans)
-
-    @commands.command()
-    async def info(self,ctx):
-        embed=discord.Embed(colour=discord.Colour.dark_purple())
-        embed.set_author(name="NextX v2.02", icon_url="https://is.gd/TTueo7")
-        embed.add_field(name=f"Ping: {round(self.bot.latency * 1000)}ms", value="\u200b", inline=False)
-        embed.add_field(name=f"Servers: {len(self.bot.guilds)} ", value="\u200b", inline=False)
-        embed.set_footer(text="Created by Xenon6502#5188")
-        await ctx.send(embed=embed)
 
 def setup(bot):
     bot.add_cog(Misc(bot))
