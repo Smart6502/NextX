@@ -3,11 +3,12 @@ import json
 import os
 import sys
 import time
-import psycopg2
+import asyncio
 
 from threading import Timer
 from discord.ext import commands
 from decouple import config
+from itertools import cycle
 from discord.ext.commands import has_permissions
 
 with open('config.json', 'r') as bootinfo_read:
@@ -44,7 +45,9 @@ owner_id = int(bootinfo_store['owner'])
 for filename in os.listdir('./cogs'):
     if filename.endswith('.py'):
         client.load_extension(f'cogs.{filename[:-3]}')
-        print("Cog: PASSED")
+        print(f"Cog {filename[:-3]}: PASSED")
+
+
 
 #----------------------Start-------------------------
 @client.event
@@ -53,14 +56,14 @@ async def on_connect():
 @client.event
 async def on_ready():
     iter_length = len(list(client.get_all_members()))
-    await client.change_presence(status=discord.Status.online, activity=discord.Game(f"{activity} | {len(client.guilds)} servers & {iter_length} users"))
-    print('Bot online')
+    await client.change_presence(status=discord.Status.online, activity=discord.Activity(name=f"@NextX.DATABASE | {activity} | {len(client.guilds)} servers & {iter_length} users", type=3))
+    print("Bot Online")
+
 @client.event
 async def on_guild_join(guild, ctx):
-    iter_length = len(list(client.get_all_members()))
-    await client.change_presence(status=discord.Status.online, activity=discord.Game(f"{activity} | {len(client.guilds)} servers & {iter_length} users"))
+    on_ready()
     gid = ctx.guild.system_channel.id
-    channel = client.get_channel(int(gid))
+    channel = client.get_channel(gid)
     await channel.send("Heyo! It's me NextX Bot - The Next Generation Bot for Discord")
 
 @client.event

@@ -8,7 +8,7 @@ from discord.ext import commands
 
 os.chdir('db')
 
-connection = sqlite3.connect("levelstate.db")
+connection = sqlite3.connect("serverdata.db")
 
 cursorl = connection.cursor()
 

@@ -302,25 +302,26 @@ class CaptchaCog(commands.Cog):
     @commands.command()
     async def captcha(self, ctx):
 
-        GEN_CAPTCHAS_FOLDER = "./captchas"
-
         CAPTCHA_SIZE_NUM = 2
 
         CaptchaGen = CaptchaGenerator(CAPTCHA_SIZE_NUM)
 
-        if not path.exists(GEN_CAPTCHAS_FOLDER):
-            makedirs(GEN_CAPTCHAS_FOLDER)
         for i in range(0, 1):
             captcha = CaptchaGen.gen_captcha_image(difficult_level=4, multicolor=False, chars_mode="hex")
             image = captcha["image"]
             characters = captcha["characters"]
-            image.save("{}/{}.png".format(GEN_CAPTCHAS_FOLDER, str(int(characters, 16)) + str(i+1)), "png")
             img_name = str(int(characters, 16)) + str(i+1)
+            image.save("./captchas-cache/{}.png".format(img_name[:-2]))
             capembed = discord.Embed(title="Captcha", description="Warning! Captcha is case-sensitive.", colour=discord.Color.dark_purple())
             capembed.set_author(icon_url="https://cdn.discordapp.com/avatars/751415029424979988/6160c6b8e76adc207dccdc67791b88f5.webp?size=1024", name="Powered by NextX Security")
             
-            await ctx.send(embed=capembed)
-            await ctx.send(file=discord.File(f'./captchas/{img_name}.png'))
+            await ctx.author.send(embed=capembed)
+            await ctx.author.send(file=discord.File(f'./captchas-cache/{img_name[:-2]}.png'))
+            os.remove(f'./captchas-cache/{img_name[:-2]}.png')
+
+    @commands.Cog.listener()
+    async def on_member_join(self):
+        pass
 
 def setup(bot):
     bot.add_cog(CaptchaCog(bot))

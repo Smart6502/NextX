@@ -9,7 +9,6 @@ import urbandictionary as ud
 import requests #used to send get request
 import psycopg2
 from requests import get
-from threading import Timer
 from time import sleep
 
 #Cog for misc commands
@@ -18,12 +17,9 @@ class Misc(commands.Cog):
         self.bot = bot
 
     @commands.command()
-    async def github(self, ctx):
-        await ctx.send("https://github.com/Smart6502/NextX")
-
-    @commands.command()
     async def echo(self, ctx, *args):
-        await ctx.send(f"{args}")
+        content = ' '.join(args)
+        await ctx.send(f"{content}")
 
     @commands.command()
     async def ping(self,ctx):
@@ -74,10 +70,6 @@ class Misc(commands.Cog):
 
         await ctx.send(random.choice(responses))
 
-    async def convertTuple(self, tup):
-        str = ''.join(tup)
-        return str
-
     @commands.command(aliases=['loading_anime'])
     async def loading_animation(self, ctx, *args):
         string = ' '.join(args)
@@ -89,7 +81,7 @@ class Misc(commands.Cog):
     async def avatar(self,ctx,member: discord.Member):
         embed=discord.Embed(title=f"{member.name}'s avatar", colour=discord.Colour.dark_purple())
         embed.set_image(url=f"{member.avatar_url}")
-        
+
         if member.mention == "<@751415029424979988>":
             await ctx.send("Hey! You can't do that!")
         else:
@@ -104,40 +96,62 @@ class Misc(commands.Cog):
         embed.add_field(name="Translated Word: ", value=f"`{translation.text}`", inline=True)
         await ctx.send(embed=embed)
 
-    @commands.command(aliases=['wikipedia','pedia','wikisearch','wsearch'])
+    @commands.command(aliases=['wikipedia','wikisearch','wsearch'])
     async def wiki(self,ctx,*args):
 
         content = ' '.join(args)
-        search = wikipedia.search(f"{content}")
-        result = search[0]
-        id = result.replace('4', '')
-        page = wikipedia.page(f"{id}") 
-        wiki = wikipedia.summary(f"{id}",sentences=5)
-        images = page.images
-        rand = random.randint(1,20)
-        embed=discord.Embed(title="Wikipedia", colour=0xf4eded)
-        embed.add_field(name="Search", value=f"**`{content}`**", inline=False)
-        embed.add_field(name="Result", value=f"{wiki}", inline=True)
-        embed.set_thumbnail(url=f"{images[rand]}")
-        if "svg" in images[rand]:
-                embed.set_thumbnail(url=f"{images[random.randint(1,20)]}")
-        if "webm" in images[rand]:
-                embed.set_thumbnail(url=f"{images[random.randint(1,20)]}")
-        if "webp" in images[rand]:
-                embed.set_thumbnail(url=f"{images[random.randint(1,20)]}")
-        await ctx.send(embed=embed)
+        try:
+            search = wikipedia.search(f"{content}", suggestion=False)
+            timout = False
+        except wikipedia.exceptions.DisambiguationError as e:
+            search = e.options
+        except wikipedia.exceptions.HTTPTimeoutError:
+            timout = True
+        if timout!=True:
+            if len(search) > 0:
+                result = search[0]
+                id = result.replace('4', '')
+                try:
+                    page = wikipedia.page(f"{id}") 
+                    pagerr=False
+                except wikipedia.exceptions.PageError:
+                    await ctx.send("PageError: Page Not Found")
+                    pagerr=True
+                if pagerr==False:
+                    wiki = wikipedia.summary(f"{id}",sentences=3, auto_suggest=False)
+                    wtitle = page.title
+                    images = page.images
+                    links = page.links
+                    refs = page.references
+                    embed=discord.Embed(title="Wikipedia", colour=0xf4eded)
+                    embed.add_field(name="Search:", value=f"**`{content}`**", inline=False)
+                    embed.add_field(name="Found:", value=f"**`{wtitle}`**")
+                    embed.add_field(name="Result:", value=f"{wiki}", inline=False)
+                    embed.add_field(name=f"Related and references:", value=f"{links[0]}\n{links[1]}\n{links[2]}\n{refs[0]}\n{refs[1]}", inline=False)
+                    embed.set_image(url=f"{images[0]}")
+                    await ctx.send(embed=embed)
+                else:
+                    await ctx.send("Wiki Page Not Found")
+            else:
+                await ctx.send("Wiki Page Not Found")
+        else:
+            await ctx.send("Connection error. Try again after some time.")
 
     @commands.command(aliases=['ud'])
-    async def urban(self,ctx,*,arg):
-        defs = ud.define(f'{arg}')
-        d = defs[0]
-        def_final = d.definition.translate({ord(i): None for i in '[]'})
-        embed=discord.Embed(title=" ", description=" ", color=0xdf3908)
-        embed.set_author(name="Urban DICT",icon_url="https://i.pinimg.com/originals/37/46/41/374641157f9fa2ae904664d6c89b984b.jpg")
-        embed.add_field(name="Search", value=f"`{arg}`", inline=False)
-        embed.set_thumbnail(url="https://i.pinimg.com/originals/37/46/41/374641157f9fa2ae904664d6c89b984b.jpg")
-        embed.add_field(name="Result", value=f"`{def_final}`", inline=True)
-        await ctx.send(embed=embed)
+    async def urban(self,ctx,*args):
+        q = ' '.join(args)
+        defs = ud.define(f'{q}')
+        if len(defs) > 0:
+            d = defs[0]
+            def_final = d.definition.translate({ord(i): None for i in '[]'})
+            uembed=discord.Embed(title=" ", description=" ", color=0xdf3908)
+            uembed.set_author(name="Urban Dictionary",icon_url="https://i.pinimg.com/originals/37/46/41/374641157f9fa2ae904664d6c89b984b.jpg")
+            uembed.add_field(name="Search", value=f"`{q}`", inline=False)
+            uembed.set_thumbnail(url="https://i.pinimg.com/originals/37/46/41/374641157f9fa2ae904664d6c89b984b.jpg")
+            uembed.add_field(name="Result", value=f"`{def_final}`", inline=False)
+            await ctx.send(embed=uembed)
+        else:
+            await ctx.send("I couldn't find that query :(")
 
     @commands.command(aliases=['gs'])
     async def gsearch(self, ctx, *args):

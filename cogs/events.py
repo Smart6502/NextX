@@ -2,25 +2,26 @@ import discord
 import os 
 import sys
 import sqlite3
+import json
 
 from discord.ext import commands
+from time import sleep
+
+conn = sqlite3.connect('./db/serverdata.db')
+
+cur = conn.cursor()
 
 class Events(commands.Cog):
     def __init__(self, bot):
         self.bot = bot
 
     @commands.Cog.listener()
-    async def on_message(self, ctx):
-        pass
-        
-
-    @commands.Cog.listener()
-    async def on_command_error(self, ctx, *args):
+    async def on_guild_join(self):
         pass
 
     @commands.command(aliases=['getel'])
     async def get_event_logs(self, ctx):
-        pass
+        await ctx.send(ctx)
 
     @commands.command()
     async def syscht(self, ctx):

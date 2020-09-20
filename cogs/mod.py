@@ -14,6 +14,26 @@ class Moderation(commands.Cog):
     def __init__(self, bot):
         self.bot = bot
 
+    @commands.Cog.listener()
+    async def on_message(self, message):
+        if not isinstance(message.channel, discord.channel.DMChannel):
+            channel = message.channel
+            words = ['fuck', 'Fuck', 'FUCK', 'bitch', 'Bitch', 'BITCH']
+            for x in words:
+                if x in message.content:
+                    msg = await channel.fetch_message(message.id)
+                    await msg.delete()
+                    sent = await channel.send("Deleted message containing blacklisted word.")
+                    sleep(1)
+                    await sent.delete()
+            if "how to learn guitar" in message.content:
+                await message.channel.send("https://www.youtube.com/watch?v=zUwEIt9ez7M")    
+                await message.channel.send("The BASICS - RIFF :rofl:")
+        else:
+            shamembed = discord.Embed(title="WTF", colour=discord.Color.dark_purple())
+            shamembed.add_field(name="Do you think I serve DM's? I DON'T!! So invite me to you server then you can use commands.", value="(ツ)", inline=True)
+            await message.channel.send(embed=shamembed)
+
     @commands.command(aliases=['rm'])
     async def clear(self,ctx, amount : int):
         if commands.has_permissions(manage_messages=True) or ctx.author.id == owner_id:
@@ -95,7 +115,6 @@ class Moderation(commands.Cog):
         embed.add_field(name="Members",value=f'{nbr_member}', inline=False)
         embed.add_field(name=f'System Channel',value=f'{ctx.guild.system_channel}',inline=False)
         await ctx.send(embed=embed)
-
 
 def setup(bot):
     bot.add_cog(Moderation(bot))
