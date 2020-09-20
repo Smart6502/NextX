@@ -13,3 +13,5 @@ The invite beta server for the NextX bot will be included in a later release
 
 
 
+
+[![Run on Repl.it](https://repl.it/badge/github/Smart6502/NextX)](https://repl.it/github/Smart6502/NextX)
