@@ -16,23 +16,18 @@ class Moderation(commands.Cog):
 
     @commands.Cog.listener()
     async def on_message(self, message):
-        if not isinstance(message.channel, discord.channel.DMChannel):
-            channel = message.channel
-            words = ['fuck', 'Fuck', 'FUCK', 'bitch', 'Bitch', 'BITCH']
-            for x in words:
-                if x in message.content:
-                    msg = await channel.fetch_message(message.id)
-                    await msg.delete()
-                    sent = await channel.send("Deleted message containing blacklisted word.")
-                    sleep(1)
-                    await sent.delete()
-            if "how to learn guitar" in message.content:
-                await message.channel.send("https://www.youtube.com/watch?v=zUwEIt9ez7M")    
-                await message.channel.send("The BASICS - RIFF :rofl:")
-        else:
-            shamembed = discord.Embed(title="WTF", colour=discord.Color.dark_purple())
-            shamembed.add_field(name="Do you think I serve DM's? I DON'T!! So invite me to you server then you can use commands.", value="(ツ)", inline=True)
-            await message.channel.send(embed=shamembed)
+        channel = message.channel
+        words = ['fuck', 'Fuck', 'FUCK', 'bitch', 'Bitch', 'BITCH']
+        for x in words:
+            if x in message.content:
+                msg = await channel.fetch_message(message.id)
+                await msg.delete()
+                sent = await channel.send("Deleted message containing blacklisted word.")
+                sleep(1)
+                await sent.delete()
+        if "how to learn guitar" in message.content:
+            await message.channel.send("https://www.youtube.com/watch?v=zUwEIt9ez7M")    
+            await message.channel.send("The BASICS - RIFF :rofl:")
 
     @commands.command(aliases=['rm'])
     async def clear(self,ctx, amount : int):
@@ -78,43 +73,49 @@ class Moderation(commands.Cog):
 
     @commands.command(aliases=['user-info','memberinfo'])
     async def userinfo(self,ctx,member: discord.Member):
-        if member.guild_permissions.administrator:
-            admin = "Yes"
+        if not isinstance(ctx.channel, discord.Channel.DMChannel):
+            if member.guild_permissions.administrator:
+                admin = "Yes"
+            else:
+                admin = "No"
+            if member.bot:
+                bot = "Yes"
+            else:
+                bot = "No"
+            created = member.created_at
+            joined = member.joined_at
+            embed=discord.Embed(title=f"{member}")
+            embed.set_thumbnail(url=f"{member.avatar_url}")
+            embed.add_field(name="Account created", value=f"{created.strftime('%Y-%m-%d')}", inline=True)
+            embed.add_field(name="Nickname", value=f"{member.nick}", inline=True)
+            embed.add_field(name="ID", value=f"{member.id}", inline=True)
+            embed.add_field(name="Joined at", value=f'{joined.strftime("%Y-%m-%d")}', inline=True)
+            embed.add_field(name="Is Admin",value=f'{admin}', inline=True)
+            embed.add_field(name="Is Bot",value=f'{bot}', inline=True)
+            embed.add_field(name=f'Roles', value=f'{len(member.roles)}')
+            await ctx.send(embed=embed)
         else:
-            admin = "No"
-        if member.bot:
-            bot = "Yes"
-        else:
-            bot = "No"
-        created = member.created_at
-        joined = member.joined_at
-        embed=discord.Embed(title=f"{member}")
-        embed.set_thumbnail(url=f"{member.avatar_url}")
-        embed.add_field(name="Account created", value=f"{created.strftime('%Y-%m-%d')}", inline=True)
-        embed.add_field(name="Nickname", value=f"{member.nick}", inline=True)
-        embed.add_field(name="ID", value=f"{member.id}", inline=True)
-        embed.add_field(name="Joined at", value=f'{joined.strftime("%Y-%m-%d")}', inline=True)
-        embed.add_field(name="Is Admin",value=f'{admin}', inline=True)
-        embed.add_field(name="Is Bot",value=f'{bot}', inline=True)
-        embed.add_field(name=f'Roles', value=f'{len(member.roles)}')
-        await ctx.send(embed=embed)
+            await ctx.send("This is a DM dumbo!")
 
     @commands.command(aliases=['server-info','guild-info'])
     async def server(self,ctx):
-        nbr_member=len(ctx.guild.members)
-        nbr_text=len(ctx.guild.text_channels)
-        nbr_vc=len(ctx.guild.voice_channels)
-        created = ctx.guild.created_at
-        embed=discord.Embed(title=f"{ctx.guild.name}",color=random.randint(0, 0xffffff))
-        embed.set_thumbnail(url=f"{ctx.guild.icon_url}")
-        embed.add_field(name="Server created", value=f"{created.strftime('%Y-%m-%d')}", inline=True)
-        embed.add_field(name="ID", value=f"{ctx.guild.id}", inline=True)
-        embed.add_field(name="Owner",value=f'{ctx.guild.owner}', inline=True)
-        embed.add_field(name="Text Channels", value=f"{nbr_text}", inline=True)
-        embed.add_field(name="Voice Channels", value=f'{nbr_vc}', inline=True)
-        embed.add_field(name="Members",value=f'{nbr_member}', inline=False)
-        embed.add_field(name=f'System Channel',value=f'{ctx.guild.system_channel}',inline=False)
-        await ctx.send(embed=embed)
+        if isinstance(ctx.channel, discord.Channel.DMChannel):
+            nbr_member=len(ctx.guild.members)
+            nbr_text=len(ctx.guild.text_channels)
+            nbr_vc=len(ctx.guild.voice_channels)
+            created = ctx.guild.created_at
+            embed=discord.Embed(title=f"{ctx.guild.name}",color=random.randint(0, 0xffffff))
+            embed.set_thumbnail(url=f"{ctx.guild.icon_url}")
+            embed.add_field(name="Server created", value=f"{created.strftime('%Y-%m-%d')}", inline=True)
+            embed.add_field(name="ID", value=f"{ctx.guild.id}", inline=True)
+            embed.add_field(name="Owner",value=f'{ctx.guild.owner}', inline=True)
+            embed.add_field(name="Text Channels", value=f"{nbr_text}", inline=True)
+            embed.add_field(name="Voice Channels", value=f'{nbr_vc}', inline=True)
+            embed.add_field(name="Members",value=f'{nbr_member}', inline=False)
+            embed.add_field(name=f'System Channel',value=f'{ctx.guild.system_channel}',inline=False)
+            await ctx.send(embed=embed)
+        else:
+            await ctx.send("This is a DM dumbo!")
 
 def setup(bot):
     bot.add_cog(Moderation(bot))

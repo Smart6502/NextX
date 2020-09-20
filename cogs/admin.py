@@ -11,11 +11,18 @@ class Admin(commands.Cog):
     def __init__(self, bot):
         self.bot = bot
 
-    @commands.command(aliases=['restart'])
+    @commands.command(aliases=['history'])
     async def logs(self, ctx):
         if ctx.message.author.id == owner_id:
             if isinstance(ctx.channel, discord.channel.DMChannel):
+                os.chdir('..')
+                os.chdir('./logs')
+                logfile = open("bot_control.log", "r")
+                logcontent = logfile.read()
                 await ctx.send("LOGS: ")
+                await ctx.send(logcontent)
+                logfile.close()
+
             else: 
                 await ctx.send("Incorrect channel.")
         else:
