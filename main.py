@@ -16,12 +16,8 @@ with open('config.json', 'r') as bootinfo_read:
 
 bootinfo_store = json.loads(boot_info_parse)
 
-with open('token.json', 'r') as token_read:
-    token_parse=token_read.read()
-
-token_store = json.loads(token_parse)
-
-print("JSON PARSE: PASSED")
+with open("token.0", "r") as tokenfile:
+    token = tokenfile.read()
 
 #from-bootjson-import-vars
 
@@ -36,7 +32,6 @@ antispam = True
 #----------------------Header------------------------
 client = commands.Bot(command_prefix = (('nextx ', '$')))
 client.remove_command('help')
-token = str(token_store['token'])
 activity = str(bootinfo_store['playing'])
 owner_id = int(bootinfo_store['owner'])
 
