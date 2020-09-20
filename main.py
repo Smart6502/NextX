@@ -7,7 +7,6 @@ import asyncio
 
 from threading import Timer
 from discord.ext import commands
-from decouple import config
 from itertools import cycle
 from discord.ext.commands import has_permissions
 
