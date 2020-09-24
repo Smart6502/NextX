@@ -4,6 +4,7 @@ import os
 import sys
 import time
 import asyncio
+import sqlite3
 
 from threading import Timer
 from discord.ext import commands
@@ -13,13 +14,11 @@ from discord.ext.commands import has_permissions
 
 with open('config.json', 'r') as bootinfo_read:
     boot_info_parse=bootinfo_read.read()
-
 bootinfo_store = json.loads(boot_info_parse)
-
 with open("token.0", "r") as tokenfile:
     token = tokenfile.read()
 
-#from-bootjson-import-vars
+#----------------------Vars---------------------------
 
 ver = str(bootinfo_store['version'])
 
@@ -34,6 +33,8 @@ client = commands.Bot(command_prefix = (('nextx ', '$')))
 client.remove_command('help')
 activity = str(bootinfo_store['playing'])
 owner_id = int(bootinfo_store['owner'])
+client.conn = sqlite3.connect('./db/serverdata.db')
+
 
 #load-cogs
 
@@ -41,8 +42,6 @@ for filename in os.listdir('./cogs'):
     if filename.endswith('.py'):
         client.load_extension(f'cogs.{filename[:-3]}')
         print(f"Cog {filename[:-3]}: PASSED")
-
-
 
 #----------------------Start-------------------------
 @client.event

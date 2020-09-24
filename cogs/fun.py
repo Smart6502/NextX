@@ -4,6 +4,7 @@ import sys
 import random
 import sqlite3
 
+from requests import get
 from discord.ext import commands
 from time import sleep
 
@@ -15,42 +16,81 @@ class Fun(commands.Cog):
     async def meme(self, ctx):
         await ctx.send("Memed you HAHAHAHA!")
 
-    #ERROR DUE TO DISCRIMINATOR FIX NEXT TIME
+    @commands.command(aliases=["8ball","ball"])
+    async def _8ball(self,ctx,*args):
+        responses = ["It is certain.",
+
+                    "It is decidedly so.",
+
+                    "Without a doubt.",
+
+                    "Yes - definitely.",
+
+                    "You may rely on it.",
+
+                    "As I see it, yes.",
+
+                    "Most likely.",
+
+                    "Outlook good.",
+
+                    "Yes.",
+
+                    "Signs point to yes.",
+
+                    "Reply hazy, try again.",
+
+                    "Ask again later.",
+
+                    "Better not tell you now.",
+
+                    "Cannot predict now.",
+
+                    "Concentrate and ask again.",
+
+                    "Don't count on it.",
+
+                    "My reply is no.",
+
+                    "My sources say no.",
+
+                    "Outlook not so good.",
+
+                    "Very doubtful."
+    ]
+
+        await ctx.send(random.choice(responses))
+
+    @commands.command(aliases=['jokes'])
+    async def joke(self,ctx):
+        data = get("https://official-joke-api.appspot.com/random_joke")
+        rand_joke = data.json()
+        str = rand_joke
+        embed=discord.Embed(title="Random joke",color=random.randint(0,0xffffff))
+        embed.add_field(name=f"Category: {str['type']}", value="\u200b", inline=False)
+        embed.add_field(name=f"Joke: {str['setup']}", value=f"{str['punchline']}", inline=True)
+        await ctx.send(embed=embed)
 
     @commands.command()
-    async def hack(self, ctx, member : discord.Member):
-        passwords = ['bigpeener123', 'xxbigdxxx', 'pxxxstar1234']
-        mostcommon = ['small', 'big', 'thicc', 'dank', 'memes', 'eat']
-        sent = await ctx.send(member.mention)
-        sleep(0.45)
-        await sent.edit(content="Hacking now...")
-        sleep(0.75)
-        await sent.edit(content=f"Finding discord login... (2FA bypassed)")
-        sleep(0.75)
-        await sent.edit(content=f"Found:\n**Email**: {member.mention}xxx@gmail.com\n**Password: {random.choice(passwords)}**")
-        sleep(0.7)
-        await sent.edit(content="Fetching DMs with closest friends (if there are any friends at all)")
-        sleep(0.5)
-        await sent.edit(content="**Last DM:** Don't frgt to like and subscribe!!")
-        sleep(0.75)
-        await sent.edit(content="Finding most common word...")
-        sleep(0.75)
-        await sent.edit(content=f"let mostCommon = {random.choice(mostcommon)}")
-        sleep(0.75)
-        await sent.edit(content=f"Injecting trojan virus into discriminator {member.mention}")
-        sleep(0.75)
-        await sent.edit(content="Virus injected, status stolen")
-        sleep(0.75)
-        await sent.edit(content="Getting Steam info...")
-        sleep(0.75)
-        await sent.edit(content=f"**IP Address:** 127.0.0.1: {random.randint(1, 6000)}")
-        sleep(0.75)
-        await sent.edit(content="Reporting account to discord for breaking TOS..")
-        sleep(1)
-        await sent.edit(content=f"Finished hacking {member.mention}")
-        sleep(0.5)
-        await sent.edit(content="Command executed with exit code 0")
-        await ctx.send("The totally real and dangerous hack is complete")
+    async def choose(self,ctx,*,choices):
+        choices = choices.split(" ")
+        choice = random.choice(choices).strip()
+        embed=discord.Embed(title="Choose command", color=random.randint(0, 0xffffff))
+        embed.add_field(name="Choices:", value=f"`{choices}`", inline=False)
+        embed.add_field(name="Choice:", value=f"`{choice}`", inline=True)
+        await ctx.send(embed=embed)
+
+    @commands.command()
+    async def twans(self,ctx,*,arg):
+        def replaceMultiple(mainString, toBeReplaces, newString):
+            for elem in toBeReplaces :
+                if elem in mainString :
+                    # Replace the string
+                    mainString = mainString.replace(elem, newString)
+
+            return mainString
+        trans = replaceMultiple(arg, ['l', 'r'] , "w")
+        await ctx.send(trans)
 
 def setup(bot):
     bot.add_cog(Fun(bot))

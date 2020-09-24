@@ -8,16 +8,11 @@ from discord.ext import commands
 from time import sleep
 
 conn = sqlite3.connect('./db/serverdata.db')
-
 cur = conn.cursor()
 
 class Events(commands.Cog):
     def __init__(self, bot):
         self.bot = bot
-
-    @commands.Cog.listener()
-    async def on_guild_join(self):
-        pass
 
     @commands.command(aliases=['getel'])
     async def get_event_logs(self, ctx):

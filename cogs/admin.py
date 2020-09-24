@@ -27,6 +27,16 @@ class Admin(commands.Cog):
                 await ctx.send("Incorrect channel.")
         else:
             await ctx.send("You cannot use this command.")  
+    
+    @commands.command()
+    @commands.is_owner()
+    async def leave(self, ctx, *, guild_name):
+        guild = discord.utils.get(self.bot.guilds, name=guild_name)
+        if guild is None:
+            await ctx.send("I don't recognize that guild.")
+            return
+        await self.bot.leave_guild(guild)
+        await ctx.send(f":ok_hand: Left guild: {guild.name} ({guild.id})")
 
 def setup(bot):
     bot.add_cog(Admin(bot))

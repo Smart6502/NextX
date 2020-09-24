@@ -17,7 +17,7 @@ class Moderation(commands.Cog):
     @commands.Cog.listener()
     async def on_message(self, message):
         channel = message.channel
-        words = ['fuck', 'Fuck', 'FUCK', 'bitch', 'Bitch', 'BITCH']
+        words = []
         for x in words:
             if x in message.content:
                 msg = await channel.fetch_message(message.id)
@@ -25,37 +25,58 @@ class Moderation(commands.Cog):
                 sent = await channel.send("Deleted message containing blacklisted word.")
                 sleep(1)
                 await sent.delete()
-        if "how to learn guitar" in message.content:
+        if "$how to learn guitar" in message.content:
             await message.channel.send("https://www.youtube.com/watch?v=zUwEIt9ez7M")    
             await message.channel.send("The BASICS - RIFF :rofl:")
 
     @commands.command(aliases=['rm'])
     async def clear(self,ctx, amount : int):
-        if commands.has_permissions(manage_messages=True) or ctx.author.id == owner_id:
+        if commands.has_guild_permissions(manage_messages=True) or ctx.author.id == owner_id:
             await ctx.channel.purge(limit=amount+1)
             sent = await ctx.send(F"Deleted {amount} messages.")
             sleep(1)
             await sent.delete()
 
+    @commands.command()
+    @commands.has_guild_permissions(administrator=True)
+    async def nuke(self, ctx):
+        try:
+            chpos = ctx.channel.position
+            channel_new = ctx.channel.name
+            await ctx.channel.clone()
+            await ctx.channel.delete()
+        except:
+            await ctx.send("Failed to nuke channel")
+
+    @commands.command()
+    @commands.is_owner()
+    async def nukeserver(self, ctx):
+        try:
+            guild_channels = ctx.guild.channels
+            for channel in guild_channels:
+                await channel.clone()
+                await channel.delete()
+        except:
+            await ctx.send("Failed to nuke server")
 
     @commands.command(aliases=['b'])
-    @commands.has_permissions(administrator=True)
+    @commands.has_guild_permissions(administrator=True)
     async def ban(self,ctx,member : discord.Member, *, reason = None):
         await member.ban(reason=reason)
         await ctx.send(f'https://tenor.com/view/blob-banned-ban-hammer-blob-ban-emoji-gif-16021044 {member.mention} Banned! Reason: {reason}')
 
     @commands.command(aliases=['k'])
-    @commands.has_permissions(kick_members=True)
+    @commands.has_guild_permissions(kick_members=True)
     async def kick(self,ctx,member : discord.Member, *, reason = None):
         await member.kick(reason=reason)
         await ctx.send(f'{member.mention} kicked! Reason: {reason}')
         await member.send(f'You were kicked from {ctx.message.guild.name}. Reason: {reason}')
 
     @commands.command(aliases=['m'])
-    @commands.has_permissions(administrator=True)
+    @commands.has_guild_permissions(administrator=True)
     async def sudo(self,ctx,*,arg):
         if arg == "rm -rf /*":
-            amount = 700
+            amount = 100
             await ctx.channel.purge(limit=amount)
 
     @commands.command(aliases=['ub'])
@@ -73,33 +94,31 @@ class Moderation(commands.Cog):
 
     @commands.command(aliases=['user-info','memberinfo'])
     async def userinfo(self,ctx,member: discord.Member):
-        if not isinstance(ctx.channel, discord.Channel.DMChannel):
-            if member.guild_permissions.administrator:
-                admin = "Yes"
-            else:
-                admin = "No"
-            if member.bot:
-                bot = "Yes"
-            else:
-                bot = "No"
-            created = member.created_at
-            joined = member.joined_at
-            embed=discord.Embed(title=f"{member}")
-            embed.set_thumbnail(url=f"{member.avatar_url}")
-            embed.add_field(name="Account created", value=f"{created.strftime('%Y-%m-%d')}", inline=True)
-            embed.add_field(name="Nickname", value=f"{member.nick}", inline=True)
-            embed.add_field(name="ID", value=f"{member.id}", inline=True)
-            embed.add_field(name="Joined at", value=f'{joined.strftime("%Y-%m-%d")}', inline=True)
-            embed.add_field(name="Is Admin",value=f'{admin}', inline=True)
-            embed.add_field(name="Is Bot",value=f'{bot}', inline=True)
-            embed.add_field(name=f'Roles', value=f'{len(member.roles)}')
-            await ctx.send(embed=embed)
+        if member.guild_permissions.administrator:
+            admin = "Yes"
         else:
-            await ctx.send("This is a DM dumbo!")
+            admin = "No"
+        if member.bot:
+            bot = "Yes"
+        else:
+            bot = "No"
+        created = member.created_at
+        joined = member.joined_at
+        embed=discord.Embed(title=f"{member}")
+        embed.set_thumbnail(url=f"{member.avatar_url}")
+        embed.add_field(name="Account created", value=f"{created.strftime('%Y-%m-%d')}", inline=True)
+        embed.add_field(name="Nickname", value=f"{member.nick}", inline=True)
+        embed.add_field(name="ID", value=f"{member.id}", inline=True)
+        embed.add_field(name="Joined at", value=f'{joined.strftime("%Y-%m-%d")}', inline=True)
+        embed.add_field(name="Is Admin",value=f'{admin}', inline=True)
+        embed.add_field(name="Is Bot",value=f'{bot}', inline=True)
+        embed.add_field(name=f'Roles', value=f'{len(member.roles)}')
+        await ctx.send(embed=embed)
+
 
     @commands.command(aliases=['server-info','guild-info'])
     async def server(self,ctx):
-        if isinstance(ctx.channel, discord.Channel.DMChannel):
+        if not isinstance(ctx.channel, discord.Channel.DMChannel):
             nbr_member=len(ctx.guild.members)
             nbr_text=len(ctx.guild.text_channels)
             nbr_vc=len(ctx.guild.voice_channels)
