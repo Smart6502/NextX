@@ -9,8 +9,3 @@
 The invite beta server for the NextX bot will be included in a later release
 
 ###### This bot is in development. If anyone would like to contribute, you can contact me on Discord - Xenon6502#5188
-
-
-ziydinurki@nedoz.com
-
-botaccount
