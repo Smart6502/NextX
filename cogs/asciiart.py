@@ -9,7 +9,7 @@ class Ascii(commands.Cog):
         self.bot = bot
 
     @commands.command()
-    async def img2txt(self, ctx: Context, url: str = None, columns=30) -> None:
+    async def img2txt(self, ctx, url: str = None, columns=30) -> None:
         """Convert image as URL to ascii."""
         if url is None:
             await ctx.send("Specify an URL!")
@@ -17,7 +17,7 @@ class Ascii(commands.Cog):
 
         output = asc.loadFromUrl(url, columns=columns, color=False)
 
-
+        await ctx.send(output)
 
 def setup(bot):
     bot.add_cog(Ascii(bot))
