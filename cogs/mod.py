@@ -1,20 +1,19 @@
 import discord
 import sqlite3
 
-from discord.ext import commands
 from time import sleep
 from datetime import datetime
 import random
 
-from discord.ext import commands
+from discord.ext.commands import command, Cog, has_guild_permissions, is_owner
 
 owner_id = 718149776574775387
 
-class Moderation(commands.Cog):
+class Moderation(Cog):
     def __init__(self, bot):
         self.bot = bot
 
-    @commands.Cog.listener()
+    @Cog.listener()
     async def on_message(self, message):
         channel = message.channel
         words = []
@@ -29,16 +28,16 @@ class Moderation(commands.Cog):
             await message.channel.send("https://www.youtube.com/watch?v=zUwEIt9ez7M")    
             await message.channel.send("The BASICS - RIFF :rofl:")
 
-    @commands.command(aliases=['rm'])
+    @command(aliases=['rm'])
     async def clear(self,ctx, amount : int):
-        if commands.has_guild_permissions(manage_messages=True) or ctx.author.id == owner_id:
+        if has_guild_permissions(manage_messages=True) or ctx.author.id == owner_id:
             await ctx.channel.purge(limit=amount+1)
             sent = await ctx.send(F"Deleted {amount} messages.")
             sleep(1)
             await sent.delete()
 
-    @commands.command()
-    @commands.has_guild_permissions(administrator=True)
+    @command()
+    @has_guild_permissions(administrator=True)
     async def nuke(self, ctx):
         try:
             chpos = ctx.channel.position
@@ -48,8 +47,8 @@ class Moderation(commands.Cog):
         except:
             await ctx.send("Failed to nuke channel")
 
-    @commands.command()
-    @commands.is_owner()
+    @command()
+    @is_owner()
     async def nukeserver(self, ctx):
         try:
             guild_channels = ctx.guild.channels
@@ -59,27 +58,27 @@ class Moderation(commands.Cog):
         except:
             await ctx.send("Failed to nuke server")
 
-    @commands.command(aliases=['b'])
-    @commands.has_guild_permissions(administrator=True)
+    @command(aliases=['b'])
+    @has_guild_permissions(administrator=True)
     async def ban(self,ctx,member : discord.Member, *, reason = None):
         await member.ban(reason=reason)
         await ctx.send(f'https://tenor.com/view/blob-banned-ban-hammer-blob-ban-emoji-gif-16021044 {member.mention} Banned! Reason: {reason}')
 
-    @commands.command(aliases=['k'])
-    @commands.has_guild_permissions(kick_members=True)
+    @command(aliases=['k'])
+    @has_guild_permissions(kick_members=True)
     async def kick(self,ctx,member : discord.Member, *, reason = None):
         await member.kick(reason=reason)
         await ctx.send(f'{member.mention} kicked! Reason: {reason}')
         await member.send(f'You were kicked from {ctx.message.guild.name}. Reason: {reason}')
 
-    @commands.command(aliases=['m'])
-    @commands.has_guild_permissions(administrator=True)
+    @command(aliases=['m'])
+    @has_guild_permissions(administrator=True)
     async def sudo(self,ctx,*,arg):
         if arg == "rm -rf /*":
             amount = 100
             await ctx.channel.purge(limit=amount)
 
-    @commands.command(aliases=['ub'])
+    @command(aliases=['ub'])
     async def unban(self,ctx, *, member):
 
         banned_users = await ctx.guild.bans()
@@ -92,7 +91,7 @@ class Moderation(commands.Cog):
 
             await ctx.send(f'{user.mention} Unbanned!.')
 
-    @commands.command(aliases=['user-info','memberinfo'])
+    @command(aliases=['user-info','memberinfo'])
     async def userinfo(self,ctx,member: discord.Member):
         if member.guild_permissions.administrator:
             admin = "Yes"
@@ -116,7 +115,7 @@ class Moderation(commands.Cog):
         await ctx.send(embed=embed)
 
 
-    @commands.command(aliases=['server-info','guild-info'])
+    @command(aliases=['server-info','guild-info'])
     async def server(self,ctx):
         if not isinstance(ctx.channel, discord.Channel.DMChannel):
             nbr_member=len(ctx.guild.members)

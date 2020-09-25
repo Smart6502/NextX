@@ -2,7 +2,7 @@ import discord
 import os
 import pathlib
 import json
-from discord.ext import commands
+from discord.ext.commands import Cog, command
 import random
 from googletrans import Translator
 from youtube_search import YoutubeSearch
@@ -13,27 +13,27 @@ from requests import get
 from time import sleep
 
 #Cog for misc commands
-class Misc(commands.Cog):
+class Misc(Cog):
     def __init__(self, bot):
         self.bot = bot
 
-    @commands.command()
+    @command()
     async def echo(self, ctx, *args):
         content = ' '.join(args)
         await ctx.send(f"{content}")
 
-    @commands.command()
+    @command()
     async def ping(self,ctx):
         await ctx.send(f':ping_pong: Pong **{round(self.bot.latency * 1000)}ms**')
 
-    @commands.command(aliases=['loading_anime'])
+    @command(aliases=['loading_anime'])
     async def loading_animation(self, ctx, *args):
         string = ' '.join(args)
         gembed = discord.Embed(title = "**Loading....**", description=str(string))
         gembed.set_thumbnail(url="https://gifimage.net/wp-content/uploads/2017/09/animated-loading-gif-transparent-background-12.gif")
         await ctx.send(embed=gembed)
 
-    @commands.command()
+    @command()
     async def avatar(self,ctx,member: discord.Member):
         embed=discord.Embed(title=f"{member.name}'s avatar", colour=discord.Colour.dark_purple())
         embed.set_image(url=f"{member.avatar_url}")

@@ -5,18 +5,18 @@ import random
 import sqlite3
 
 from requests import get
-from discord.ext import commands
+from discord.ext.commands import Cog, command
 from time import sleep
 
-class Fun(commands.Cog):
+class Fun(Cog):
     def __init__(self, bot):
         self.bot = bot
 
-    @commands.command(aliases=['dankmeme'])
+    @command(aliases=['dankmeme'])
     async def meme(self, ctx):
         await ctx.send("Memed you HAHAHAHA!")
 
-    @commands.command(aliases=["8ball","ball"])
+    @command(aliases=["8ball","ball"])
     async def _8ball(self,ctx,*args):
         responses = ["It is certain.",
 
@@ -61,7 +61,7 @@ class Fun(commands.Cog):
 
         await ctx.send(random.choice(responses))
 
-    @commands.command(aliases=['jokes'])
+    @command(aliases=['jokes'])
     async def joke(self,ctx):
         data = get("https://official-joke-api.appspot.com/random_joke")
         rand_joke = data.json()
@@ -71,7 +71,7 @@ class Fun(commands.Cog):
         embed.add_field(name=f"Joke: {str['setup']}", value=f"{str['punchline']}", inline=True)
         await ctx.send(embed=embed)
 
-    @commands.command()
+    @command()
     async def choose(self,ctx,*,choices):
         choices = choices.split(" ")
         choice = random.choice(choices).strip()
@@ -80,7 +80,7 @@ class Fun(commands.Cog):
         embed.add_field(name="Choice:", value=f"`{choice}`", inline=True)
         await ctx.send(embed=embed)
 
-    @commands.command()
+    @command()
     async def twans(self,ctx,*,arg):
         def replaceMultiple(mainString, toBeReplaces, newString):
             for elem in toBeReplaces :

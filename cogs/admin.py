@@ -3,15 +3,15 @@ import os
 import sys
 import sqlite3
 
-from discord.ext import commands
+from discord.ext.commands import Cog, command, is_owner
 
 owner_id = 718149776574775387
 
-class Admin(commands.Cog):
+class Admin(Cog):
     def __init__(self, bot):
         self.bot = bot
 
-    @commands.command(aliases=['history'])
+    @command(aliases=['history'])
     async def logs(self, ctx):
         if ctx.message.author.id == owner_id:
             if isinstance(ctx.channel, discord.channel.DMChannel):
@@ -28,8 +28,8 @@ class Admin(commands.Cog):
         else:
             await ctx.send("You cannot use this command.")  
     
-    @commands.command()
-    @commands.is_owner()
+    @command()
+    @is_owner()
     async def leave(self, ctx, *, guild_name):
         guild = discord.utils.get(self.bot.guilds, name=guild_name)
         if guild is None:

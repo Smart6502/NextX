@@ -2,13 +2,13 @@ import discord
 import ascii as asc
 
 from pyfiglet import Figlet, FigletFont
-from discord.ext import commands
+from discord.ext.commands import Cog, command
 
-class Ascii(commands.Cog):
+class Ascii(Cog):
     def __init__(self, bot):
         self.bot = bot
 
-    @commands.command()
+    @command()
     async def img2txt(self, ctx, url: str = None, columns=30) -> None:
         """Convert image as URL to ascii."""
         if url is None:

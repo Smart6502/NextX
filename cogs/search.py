@@ -1,15 +1,15 @@
 import discord
 import json
 import urbandictionary as ud
-from discord.ext import commands
+from discord.ext.commands import command, Cog
 from googlesearch import search
 from youtube_search import YoutubeSearch
 
-class Search(commands.Cog):
+class Search(Cog):
     def __init__(self, bot):
         self.bot = bot
 
-    @commands.command(aliases=['gs'])
+    @command(aliases=['gs'])
     async def gsearch(self, ctx, *args):
         
         content = ' '.join(args)
@@ -24,7 +24,7 @@ class Search(commands.Cog):
             await ctx.send(f"**Search result: **")
             await ctx.send(j)
 
-    @commands.command(aliases=['ytsearch'])
+    @command(aliases=['ytsearch'])
     async def ysearch(self, ctx, *args):
         content = ' '.join(args)
         results = YoutubeSearch(content, max_results=1).to_json()
@@ -39,7 +39,7 @@ class Search(commands.Cog):
         yembed.add_field(name="Views:", value=video_content['views'], inline=False)
         await ctx.send(embed=yembed)
 
-    @commands.command(aliases=['ud'])
+    @command(aliases=['ud'])
     async def urban(self,ctx,*args):
         q = ' '.join(args)
         defs = ud.define(f'{q}')

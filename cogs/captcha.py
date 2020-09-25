@@ -5,7 +5,7 @@ from os import path
 from random import randint, choice
 from PIL import Image, ImageFont, ImageDraw
 
-from discord.ext import commands
+from discord.ext.commands import Cog, command
 from os import path, makedirs
 
 SCRIPT_PATH = path.dirname(path.realpath(__file__))
@@ -295,11 +295,11 @@ class CaptchaGenerator:
         generated_captcha = {"image": image, "characters": image_characters}
         return generated_captcha
 
-class CaptchaCog(commands.Cog):
+class CaptchaCog(Cog):
     def __init__(self, bot):
         self.bot = bot
 
-    @commands.command()
+    @command()
     async def captcha(self, ctx):
 
         CAPTCHA_SIZE_NUM = 2
@@ -319,7 +319,7 @@ class CaptchaCog(commands.Cog):
             await ctx.author.send(file=discord.File(f'./captchas-cache/{img_name[:-2]}.png'))
             os.remove(f'./captchas-cache/{img_name[:-2]}.png')
 
-    @commands.command()
+    @command()
     async def test_captcha(self, message):
         msend = message.author
         CAPTCHA_SIZE_NUM = 2

@@ -1,26 +1,27 @@
 import discord
 import wikipedia
 
-from discord.ext import commands
+from discord.ext.commands import Cog, command
+from whapi import search, get_id, get_images
 
-class WikiSearch(commands.Cog):
+class WikiSearch(Cog):
     def __init__(self, bot):
         self.bot = bot
 
-    @commands.command(aliases=['wikipedia','wikisearch','wsearch'])
+    @command(aliases=['wikipedia','wikisearch','wsearch'])
     async def wiki(self,ctx,*args):
 
         content = ' '.join(args)
         try:
-            search = wikipedia.search(f"{content}", suggestion=False)
+            wsearch = wikipedia.search(f"{content}", suggestion=False)
             timeout = False
         except wikipedia.exceptions.DisambiguationError as e:
-            search = e.options
+            wsearch = e.options
         except wikipedia.exceptions.HTTPTimeoutError:
             timeout = True
         if timeout!=True:
-            if len(search) > 0:
-                result = search[0]
+            if len(wsearch) > 0:
+                result = wsearch[0]
                 id = result.replace('4', '')
                 try:
                     page = wikipedia.page(f"{id}") 
@@ -47,6 +48,14 @@ class WikiSearch(commands.Cog):
                 await ctx.send("Wiki Page Not Found")
         else:
             await ctx.send("Connection error. Try again after some time.")
+
+    @command(aliases=['howto'])
+    async def wikihow(self, ctx, *args):
+        content = ' '.join(args)
+        content = str(content)
+        searches_wh = search(content, 5)
+        search_wh = searches_wh[0]
+        await ctx.send(search_wh['url'])
 
 def setup(bot):
     bot.add_cog(WikiSearch(bot))

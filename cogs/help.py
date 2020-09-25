@@ -1,12 +1,12 @@
 import discord
 
-from discord.ext import commands
+from discord.ext.commands import Cog, group
 
-class HelpCog(commands.Cog):
+class HelpCog(Cog):
     def __init__(self, bot):
         self.bot = bot
 
-    @commands.group(aliases=['h'])
+    @group(aliases=['h'])
     async def help(self, ctx):
         if ctx.invoked_subcommand is None:
             hembed = discord.Embed(title="\n", description="\n", colour=discord.Color.dark_purple())
