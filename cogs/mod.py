@@ -40,8 +40,6 @@ class Moderation(Cog):
     @has_guild_permissions(administrator=True)
     async def nuke(self, ctx):
         try:
-            chpos = ctx.channel.position
-            channel_new = ctx.channel.name
             await ctx.channel.clone()
             await ctx.channel.delete()
         except:

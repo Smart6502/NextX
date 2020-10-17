@@ -300,27 +300,7 @@ class CaptchaCog(Cog):
         self.bot = bot
 
     @command()
-    async def captcha(self, ctx):
-
-        CAPTCHA_SIZE_NUM = 2
-
-        CaptchaGen = CaptchaGenerator(CAPTCHA_SIZE_NUM)
-
-        for i in range(0, 1):
-            captcha = CaptchaGen.gen_captcha_image(difficult_level=4, multicolor=False, chars_mode="hex")
-            image = captcha["image"]
-            characters = captcha["characters"]
-            img_name = str(int(characters, 16)) + str(i+1)
-            image.save("./captchas-cache/{}.png".format(img_name[:-2]))
-            capembed = discord.Embed(title="Captcha", description="Warning! Captcha is case-sensitive.", colour=discord.Color.dark_purple())
-            capembed.set_author(icon_url="https://cdn.discordapp.com/avatars/751415029424979988/6160c6b8e76adc207dccdc67791b88f5.webp?size=1024", name="Powered by NextX Security")
-
-            await ctx.author.send(embed=capembed)
-            await ctx.author.send(file=discord.File(f'./captchas-cache/{img_name[:-2]}.png'))
-            os.remove(f'./captchas-cache/{img_name[:-2]}.png')
-
-    @command()
-    async def test_captcha(self, message):
+    async def captcha(self, message):
         msend = message.author
         CAPTCHA_SIZE_NUM = 2
         CaptchaGen = CaptchaGenerator(CAPTCHA_SIZE_NUM)

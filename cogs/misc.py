@@ -1,16 +1,7 @@
 import discord
 import os
 import pathlib
-import json
 from discord.ext.commands import Cog, command
-import random
-from googletrans import Translator
-from youtube_search import YoutubeSearch
-import wikipedia
-import urbandictionary as ud
-import requests #used to send get request
-from requests import get
-from time import sleep
 
 #Cog for misc commands
 class Misc(Cog):
@@ -26,7 +17,7 @@ class Misc(Cog):
     async def ping(self,ctx):
         await ctx.send(f':ping_pong: Pong **{round(self.bot.latency * 1000)}ms**')
 
-    @command(aliases=['loading_anime'])
+    @command(aliases=['loading_anime', 'loading animation'])
     async def loading_animation(self, ctx, *args):
         string = ' '.join(args)
         gembed = discord.Embed(title = "**Loading....**", description=str(string))

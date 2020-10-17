@@ -1,7 +1,6 @@
 import discord
 import os 
 import sys
-import sqlite3
 import datetime
 
 from discord.ext.commands import Cog, command

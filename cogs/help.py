@@ -13,7 +13,6 @@ class HelpCog(Cog):
             hembed.set_author(name="NextX Bot Commands", icon_url="https://cdn.discordapp.com/avatars/751415029424979988/6160c6b8e76adc207dccdc67791b88f5.webp?size=1024")
             hembed.set_thumbnail(url="https://cdn.discordapp.com/avatars/751415029424979988/6160c6b8e76adc207dccdc67791b88f5.webp?size=1024")            
             hembed.add_field(name=":man_judge:  **Moderation**", value="`$help moderator`", inline=True)
-            hembed.add_field(name=":medal: **Levels**", value="`$help levels`", inline=True)
             hembed.add_field(name=":mag:  **Search**", value="`$help search`", inline=True)
             hembed.add_field(name=":musical_note:  **Music**", value="`$help music`", inline=True)
             hembed.add_field(name=":jigsaw:  **Misc**", value="`$help misc`", inline=True)
@@ -28,15 +27,14 @@ class HelpCog(Cog):
         hembed.add_field(name="`$ban [member]`", value="Bans a member.", inline=False)
         hembed.add_field(name="`$unban [member]`", value="Unbans a member.", inline=False)
         hembed.add_field(name="`$userinfo [member]`", value="Gets info about a member.", inline=False)
-        hembed.add_field(name="`server`", value="Gets info about server.", inline=False)
+        hembed.add_field(name="`$server`", value="Gets info about server.", inline=False)
         await ctx.send(embed=hembed)
 
     @help.command(aliases=['Search'])
     async def search(self, ctx):
         hembed = discord.Embed(title="**Search Commands**", colour=discord.Color.dark_purple())
         hembed.add_field(name="`$gsearch [content]`", value="Google searches for you.", inline=False)
-        hembed.add_field(name="`$wikisearch [content]`", value="Searches Wikipedia for you.", inline=False)
-        hembed.add_field(name="`$ysearch [content] (in development and unavailable)`", value="Searches Youtube for you.", inline=False)
+        hembed.add_field(name="`$ytsearch [content]`", value="Searches Youtube for you.", inline=False)
         await ctx.send(embed=hembed)
 
     @help.command(aliases=['miscellaneous', 'Miscellaneous', 'Misc'])
@@ -51,29 +49,19 @@ class HelpCog(Cog):
         hembed.add_field(name="`$twans`", value="Twans (ツ)", inline=False)
         await ctx.send(embed=hembed)
 
-    @help.command(aliases=['Music', 'sound', 'Sound'])
-    async def music(self, ctx):
-        hembed = discord.Embed(title="**Music Commands(in development and unavailable)**", colour=discord.Color.dark_purple())
-        hembed.add_field(name="`search`", value="Searches music for you", inline=False)
-        hembed.add_field(name="`play`", value="Plays a specified song", inline=False)
-        hembed.add_field(name="`stop`", value="Stops a song for you", inline=False)
-        hembed.add_field(name="`join`", value="Joins the bot to the music channel defined", inline=False)
-        hembed.add_field(name="`settings`", value="The bot music settings", inline=False)
-        await ctx.send(embed=hembed)
-
-    @help.command(aliases=['level', 'Level', 'Levels'])
-    async def levels(self, ctx):
-        hembed = discord.Embed(title="**Level Commands(in development and unavailable)**", colour=discord.Color.dark_purple())
-        hembed.add_field(name="`levelsys`", value="Sets level system to enabled or disabled.", inline=False)
-        hembed.add_field(name="`rank`", value="Gives you your XP level, rank in the server")
-        await ctx.send(embed=hembed)
-
     @help.command()
     async def fun(self, ctx):
         hembed = discord.Embed(title="**Fun Commands**", colour=discord.Color.dark_purple())
         hembed.add_field(name="`$echo`", value="Echos back what you sent the bot.", inline=False)
         hembed.add_field(name="`$8ball [question]`", value="A yes or a no", inline=False)
         hembed.add_field(name="`$joke`", value="A joke for you to laugh.", inline=False)
+        await ctx.send(embed=hembed)
+
+    @help.command()
+    async def wiki(self, ctx):
+        hembed = discord.Embed(title="**Wiki Commands**", colour=discord.Color.dark_purple())
+        hembed.add_field(name="`$wiki [content]`", value="Searches Wikipedia for you.", inline=False)
+        hembed.add_field(name="`$wikihow [content]`", value="Searches Wikihow for you.", inline=False)
         await ctx.send(embed=hembed)
 
 def setup(bot):
